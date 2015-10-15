@@ -1,0 +1,26 @@
+<monitor>
+    <name>AWS S3 Monitor</name>
+    <type>managed</type>
+    <description>AWS S3 Monitoring Extension</description>
+    <monitor-configuration></monitor-configuration>
+    <monitor-run-task>
+        <execution-style>periodic</execution-style>
+        <execution-frequency-in-seconds>60</execution-frequency-in-seconds>
+        <name>AWS S3 Monitor Run task</name>
+        <display-name>AWS S3 Monitor Run task</display-name>
+        <description>AWS S3 Monitor Run task</description>
+        <type>java</type>
+        <execution-timeout-in-secs>60</execution-timeout-in-secs>
+        
+		<task-arguments>
+			<argument name="config-file" is-required="true" default-value="monitors/AWSS3Monitor/conf/config.yaml" />
+			<argument name="region-endpoints-config" is-required="true" default-value="monitors/AWSS3Monitor/conf/region-endpoints.yaml" />
+		</task-arguments>
+            
+        <java-task>
+            <classpath>aws-s3-monitoring-extension.jar</classpath>
+            <impl-class>com.appdynamics.extensions.aws.s3.S3Monitor</impl-class>
+        </java-task>
+        
+    </monitor-run-task>
+</monitor>
