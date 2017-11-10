@@ -1,7 +1,7 @@
 accounts:
-  - awsAccessKey: "AKIAIA4BC4BULLMKRA4Q"
-    awsSecretKey: "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"
-    displayAccountName: "AppD"
+  - awsAccessKey: ""
+    awsSecretKey: ""
+    displayAccountName: ""
     
     # Regions where elastiCache is registered
     # Allowed values: ap-southeast-1, ap-southeast-2, ap-northeast-1, eu-central-1, 
@@ -20,7 +20,7 @@ proxyConfig:
     password:
 
 #Filter metrics by bucket name. Only metrics from the specified buckets will be extracted. If none are mentioned, metrics from all buckets will be extracted.
-buckets: ["lambda-extension", "appdynamics-portal-qa"]
+buckets: [".*"]
 
 # Global metrics config for all accounts
 metricsConfig:
