@@ -1,6 +1,7 @@
 package com.appdynamics.extensions.aws.s3;
 
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
+import com.amazonaws.services.cloudwatch.model.DimensionFilter;
 import com.amazonaws.services.cloudwatch.model.Metric;
 import com.appdynamics.extensions.aws.config.MetricType;
 import com.appdynamics.extensions.aws.metric.NamespaceMetricStatistics;
@@ -8,36 +9,47 @@ import com.appdynamics.extensions.aws.metric.StatisticType;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessor;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessorHelper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
+import static com.appdynamics.extensions.aws.s3.util.Constants.*;
+
 /**
- * @author Satish Muddam
+ * @author Satish Muddam, Aditya Jagtiani
  */
 public class S3MetricsProcessor implements MetricsProcessor {
-
-    private static final String NAMESPACE = "AWS/S3";
-
-    private static final String[] DIMENSIONS = {"BucketName", "StorageType"};
 
     private List<MetricType> metricTypes;
 
     private Pattern excludeMetricsPattern;
 
+    private List<String> buckets;
+
     public S3MetricsProcessor(List<MetricType> metricTypes,
-                              Set<String> excludeMetrics) {
+                              Set<String> excludeMetrics, List<String> buckets) {
         this.metricTypes = metricTypes;
         this.excludeMetricsPattern = MetricsProcessorHelper.createPattern(excludeMetrics);
+        this.buckets = buckets;
     }
 
-    public List<Metric> getMetrics(AmazonCloudWatch awsCloudWatch) {
+    public List<Metric> getMetrics(AmazonCloudWatch awsCloudWatch, String accountName) {
+        List<DimensionFilter> dimensions = new ArrayList<DimensionFilter>();
+
+        DimensionFilter nameDimensionFilter = new DimensionFilter();
+        nameDimensionFilter.withName(DIMENSIONS[0]);
+
+        DimensionFilter storageDimensionFilter = new DimensionFilter();
+        storageDimensionFilter.withName(DIMENSIONS[1]);
+
+
+        dimensions.add(nameDimensionFilter);
+        dimensions.add(storageDimensionFilter);
+
+        S3BucketsPredicate predicate = new S3BucketsPredicate(buckets);
         return MetricsProcessorHelper.getFilteredMetrics(awsCloudWatch,
                 NAMESPACE,
                 excludeMetricsPattern,
-                DIMENSIONS);
+                dimensions, predicate);
     }
 
     public StatisticType getStatisticType(Metric metric) {
@@ -46,8 +58,8 @@ public class S3MetricsProcessor implements MetricsProcessor {
 
     public Map<String, Double> createMetricStatsMapForUpload(NamespaceMetricStatistics namespaceMetricStats) {
         Map<String, String> dimensionToMetricPathNameDictionary = new HashMap<String, String>();
-        dimensionToMetricPathNameDictionary.put(DIMENSIONS[0], "Bucket Name");
-        dimensionToMetricPathNameDictionary.put(DIMENSIONS[1], "Storage Type");
+        dimensionToMetricPathNameDictionary.put(DIMENSIONS[0], BUCKET_DIMENSION_VALUE);
+        dimensionToMetricPathNameDictionary.put(DIMENSIONS[1], STORAGE_DIMENSION_VALUE);
 
 
         return MetricsProcessorHelper.createMetricStatsMapForUpload(namespaceMetricStats,
