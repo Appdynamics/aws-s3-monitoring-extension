@@ -1,0 +1,23 @@
+{
+	"id" : "aws-s3-monitoring-extension",
+	"type" : "monitor",
+	"displayName" : "AWS S3 Monitoring Extension",
+	"description" : "An AppDynamics extension to be used with a stand alone Java machine agent to provide metrics for Amazon S3.",
+	"version" : "1.0.0",
+	"downloadLink" : "https://github.com/Appdynamics/aws-s3-monitoring-extension/releases/download/1.0.0/awss3monitor-1.0.1.zip",
+	"imageLink" : "https://github.com/Appdynamics/aws-s3-monitoring-extension/blob/master/s3amazon.png",
+	"configs" : [
+		{
+			"name" : "monitor.xml",
+			"link" : "https://raw.githubusercontent.com/Appdynamics/aws-s3-monitoring-extension/master/src/main/resources/conf/monitor.xml"
+		},
+		{
+			"name" : "config.yml",
+			"link" : "https://raw.githubusercontent.com/Appdynamics/aws-s3-monitoring-extension/master/src/main/resources/conf/config.yaml"
+		},
+		{
+			"name" : "region-endpoints.yml",
+			"link" : "https://raw.githubusercontent.com/Appdynamics/aws-s3-monitoring-extension/master/src/main/resources/conf/region-endpoints.yaml"
+		}
+	]
+}
