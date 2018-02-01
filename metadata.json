@@ -5,7 +5,7 @@
 	"description" : "An AppDynamics extension to be used with a stand alone Java machine agent to provide metrics for Amazon S3.",
 	"version" : "1.0.0",
 	"downloadLink" : "https://github.com/Appdynamics/aws-s3-monitoring-extension/releases/download/1.0.0/awss3monitor-1.0.1.zip",
-	"imageLink" : "https://github.com/Appdynamics/aws-s3-monitoring-extension/blob/master/s3amazon.png",
+	"imageLink" : "https://www.appdynamics.com/media/uploaded-images/1517510918/s3amazon.png",
 	"configs" : [
 		{
 			"name" : "monitor.xml",
