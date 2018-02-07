@@ -55,4 +55,4 @@ concurrencyConfig:
   noOfMetricThreadsPerRegion: 3
 
 #prefix used to show metrics in AppDynamics
-metricPrefix: "Server|Component:<TIER_ID>|Custom Metrics|Amazon S3|"
+metricPrefix: "Server|Component:<TIER_ID>|Custom Metrics|Amazon S3"
