@@ -125,6 +125,8 @@
 									<fileset dir="src/main/resources/conf" includes="monitor.xml" />
 									<fileset dir="src/main/resources" includes="conf/config.yaml" />
 									<fileset dir="src/main/resources" includes="conf/region-endpoints.yaml" />
+									<fileset dir="${project.basedir}" includes="LICENSE.txt"/>
+									<fileset dir="${project.basedir}" includes="NOTICE.txt"/>
 								</copy>
 								<copy todir="${target.dir}">
 									<fileset dir="${build.directory}" includes="${project.artifactId}.${project.packaging}" />
