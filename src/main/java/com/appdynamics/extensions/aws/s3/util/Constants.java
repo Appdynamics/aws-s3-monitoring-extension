@@ -8,7 +8,7 @@
 
 package com.appdynamics.extensions.aws.s3.util;
 
-import static com.appdynamics.extensions.aws.Constants.METRIC_PATH_SEPARATOR;
+
 
 /**
  * @author vishaka.sekar
