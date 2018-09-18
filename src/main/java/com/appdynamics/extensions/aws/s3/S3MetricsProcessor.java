@@ -21,7 +21,6 @@ import com.appdynamics.extensions.aws.predicate.MultiDimensionPredicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.LongAdder;
@@ -43,22 +42,11 @@ public class S3MetricsProcessor implements MetricsProcessor {
 
     @Override
     public List<AWSMetric> getMetrics(AmazonCloudWatch awsCloudWatch, String accountName, LongAdder awsRequestsCounter) {
-        List<DimensionFilter> dimensionFilter = getDimensionFilters();
         MultiDimensionPredicate multiDimensionPredicate = new MultiDimensionPredicate(dimensions);
         return MetricsProcessorHelper.getFilteredMetrics(awsCloudWatch, awsRequestsCounter,
                 NAMESPACE,
                 includeMetrics,
                 null,multiDimensionPredicate);
-    }
-
-    private List<DimensionFilter> getDimensionFilters() {
-        List<DimensionFilter> dimensionFilters = Lists.newArrayList();
-        for( com.appdynamics.extensions.aws.config.Dimension dimension : dimensions){
-            DimensionFilter dimensionFilter = new DimensionFilter();
-            dimensionFilter.withName(dimension.getName());
-            dimensionFilters.add(dimensionFilter);
-        }
-        return dimensionFilters;
     }
 
     @Override

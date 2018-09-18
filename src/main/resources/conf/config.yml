@@ -45,13 +45,6 @@ dimensions:
                     # `.* ` fetches all AllStorageTypes
 
 
-
-## Filter the buckets by tag name. tagValue is optional.
-##if tagValue is not provided, we will fetch all the instances with the tagName.
-#tags:
-#  - name: "Name"
-#    #value: ["tag1", "tag2", "tag3"]
-
 #Allowed values are Basic and Detailed.
 #Refer https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html for more information
 
@@ -104,11 +97,15 @@ metricsConfig:
     # Note: Irrespective of the metric type, value will still be reported as
     # Observed value to the Controller
 
+
+    # To enable paid metrics for an S3 bucket, please refer
+    # https://docs.aws.amazon.com/AmazonS3/latest/user-guide/configure-metrics.html
+
     includeMetrics:
-   #~~~~~~AWS S3 Storage Metrics(Provided Daily, free metrics)~~~~~~~~~~~~~~~~~
+   #~~~~~~AWS S3 Storage Metrics(Provided Daily by  AWS CloudWatch, free metrics)~~~~~~~~~~~~~~~~~
       - name: "BucketSizeBytes"
         alias: "Data Stored(Bytes)"
-        statType: "Average"
+        statType: "ave"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
@@ -117,17 +114,17 @@ metricsConfig:
 
       - name: "NumberOfObjects"
         alias: "Count of Objects" #The total number of objects stored in a bucket for all storage classes
-        statType: "Average"
+        statType: "ave"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
         timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
-    #~~~~~~~~AWS Request Metrics(Provided every minute, we aggregate it over [startTimeInMinsBeforeNow]= 5 min, paid metrics)
+    #~~~~~~~~AWS Request Metrics(Provided every minute by AWS CloudWatch, paid metrics)
       - name: "AllRequests"
-        alias: "Total Requests Per min (Unit: Count, Stat Type: sum)"
-        statType: "Sum"
+        alias: "Total Requests Per min (Unit - Count; Stat Type - sum)"
+        statType: "sum"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
@@ -135,74 +132,94 @@ metricsConfig:
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "GetRequests"
-        alias: "Get Requests Per min (Unit: Count, Stat Type: sum)"
-        statType: "Sum"
+        alias: "Get Requests Per min (Unit -  Count; Stat Type - sum)"
+        statType: "sum"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
+        timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "PutRequests"
-        alias: "Put Requests Per min (Unit: Count, Stat Type: sum)"
-        statType: "Sum"
+        alias: "Put Requests Per min (Unit - Count; Stat Type - sum)"
+        statType: "sum"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
+        timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "DeleteRequests"
-        alias: "Delete Requests Per min (Unit: Count, Stat Type: sum)"
-        statType: "Sum"
+        alias: "Delete Requests Per min (Unit - Count; Stat Type - sum)"
+        statType: "sum"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
+        timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "HeadRequests"
-        alias: "Head Requests Per min (Unit: Count, Stat Type: sum)"
-        statType: "Sum"
+        alias: "Head Requests Per min (Unit - Count; Stat Type - sum)"
+        statType: "sum"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
+        timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "PostRequests"
-        alias: "Post Requests Per min (Unit: Count, Stat Type: sum)"
-        statType: "Sum"
+        alias: "Post Requests Per min (Unit - Count; Stat Type - sum)"
+        statType: "sum"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
+        timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "SelectRequests"
-        alias: "Select Requests Per min (Unit: Count, Stat Type: sum)"
-        statType: "Sum"
+        alias: "Select Requests Per min (Unit - Count; Stat Type - sum)"
+        statType: "sum"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
+        timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "ListRequests"
-        alias: "List Requests Per min (Unit: Count, Stat Type: sum)"
-        statType: "Sum"
+        alias: "List Requests Per min (Unit - Count; Stat Type - sum)"
+        statType: "sum"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
+        timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
 
-      #~~~~~~ Bytes level metrics
+      - name: "4xxErrors"
+        alias: "Total 4xx errors per min(Unit - Count; Stat Type - sum)"
+        statType: "sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "COLLECTIVE" #because errors per min are added, not averaged across nodes in a tier
+
+      - name: "5xxErrors"
+        alias: "Total 5xx errors per min(Unit - Count; Stat Type - sum)"
+        statType: "sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "COLLECTIVE"
+
+
+
+    #~~~~~~  Data Transfer metrics(Provided every minute by CloudWatch, paid metrics)
 
       - name: "SelectScannedBytes"
-        alias: "Bytes Scanned per request(Unit: Bytes, Stat Type: average)"
-        statType: "Average"
+        alias: "Bytes Scanned per request(Unit - Bytes; Stat Type - average)"
+        statType: "ave"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
@@ -210,8 +227,8 @@ metricsConfig:
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "SelectReturnedBytes"
-        alias: "Bytes Returned per request(Unit: Bytes, Stat Type: average)"
-        statType: "Average"
+        alias: "Bytes Returned per request(Unit - Bytes; Stat Type: average)"
+        statType: "ave"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
@@ -219,8 +236,8 @@ metricsConfig:
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "BytesDownloaded"
-        alias: "Bytes downloaded per request(Unit: Bytes, Stat Type: average)"
-        statType: "Average"
+        alias: "Bytes downloaded per request(Unit - Bytes; Stat Type - average)"
+        statType: "ave"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
@@ -228,37 +245,17 @@ metricsConfig:
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "BytesUploaded"
-        alias: "Bytes uploaded per request(Unit: Bytes, Stat Type: average)"
-        statType: "Average"
+        alias: "Bytes uploaded per request(Unit - Bytes; Stat Type - average)"
+        statType: "ave"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
         timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
 
-      ##~~~~Error metrics
-      - name: "4xxErrors"
-        alias: "Total 4xx errors per min(Unit: Count, Stat Type: sum)"
-        statType: "Sum"
-        delta: false
-        multiplier: 1
-        aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
-        clusterRollUpType: "INDIVIDUAL"
-
-      - name: "5xxErrors"
-        alias: "Total 5xx errors per min(Unit: Count, Stat Type: sum)"
-        statType: "Sum"
-        delta: false
-        multiplier: 1
-        aggregationType: "AVERAGE"
-        timeRollUpType: "SUM"
-        clusterRollUpType: "INDIVIDUAL"
-
-      #~~~~~Latency metrics
-      - name: "FirstByteLatency" #per-request time from the complete request being received by S3 bucket to when the response starts to be returned
-        alias: "Response Latency per request(Unit: Milliseconds, Stat Type: Average)"
-        statType: "Average"
+      - name: "FirstByteLatency" #per-request time from the complete request being received by S3 bucket to when the response starts to be returned.
+        alias: "First Byte Latency per request(Unit - Milliseconds; Stat Type - average)"
+        statType: "ave"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
@@ -266,8 +263,8 @@ metricsConfig:
         clusterRollUpType: "INDIVIDUAL"
 
       - name: "TotalRequestLatency" #per-request time from the first byte received to the last byte sent to S3 bucket.
-        alias: "Total Latency per request(Unit: Milliseconds, Stat Type: Average)"
-        statType: "Average"
+        alias: "Total Latency per request(Unit - Milliseconds; Stat Type - average)"
+        statType: "ave"
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
@@ -277,7 +274,7 @@ metricsConfig:
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     metricsTimeRange:
-      startTimeInMinsBeforeNow: 5
+      startTimeInMinsBeforeNow: 60
       endTimeInMinsBeforeNow: 0
 
     # Rate limit ( per second ) for GetMetricStatistics, default value is 400.

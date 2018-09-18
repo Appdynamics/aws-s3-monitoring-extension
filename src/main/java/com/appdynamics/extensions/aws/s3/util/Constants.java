@@ -8,6 +8,8 @@
 
 package com.appdynamics.extensions.aws.s3.util;
 
+import static com.appdynamics.extensions.aws.Constants.METRIC_PATH_SEPARATOR;
+
 /**
  * @author vishaka.sekar
  * @since 09/10/18
@@ -15,5 +17,9 @@ package com.appdynamics.extensions.aws.s3.util;
 public class Constants {
 
     public static final String NAMESPACE = "AWS/S3";
+
+    public static final String DEFAULT_METRIC_PREFIX = "Custom Metrics|Amazon S3";
+
+    public static final String MONITOR_NAME = "S3Monitor";
 
 }

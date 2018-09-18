@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static com.appdynamics.extensions.aws.Constants.METRIC_PATH_SEPARATOR;
+import static com.appdynamics.extensions.aws.s3.util.Constants.DEFAULT_METRIC_PREFIX;
+import static com.appdynamics.extensions.aws.s3.util.Constants.MONITOR_NAME;
 
 /**
  * @author Vishaka Sekar
@@ -35,17 +35,12 @@ public class S3Monitor extends SingleNamespaceCloudwatchMonitor<Configuration> {
 
     private static final Logger LOGGER = Logger.getLogger(S3Monitor.class);
 
-    private static final String DEFAULT_METRIC_PREFIX = String.format("%s%s%s%s",
-            "Custom Metrics", METRIC_PATH_SEPARATOR, "Amazon S3", METRIC_PATH_SEPARATOR);
-
     public S3Monitor() {
         super(Configuration.class);
     }
 
     @Override
-    public String getMonitorName() {
-        return "S3Monitor";
-    }
+    public String getMonitorName() { return MONITOR_NAME; }
 
     @Override
     protected String getDefaultMetricPrefix() {
@@ -83,30 +78,5 @@ public class S3Monitor extends SingleNamespaceCloudwatchMonitor<Configuration> {
                 config.getMetricsConfig().getIncludeMetrics(), config.getDimensions());
     }
 
-    //TODO: remove before publishing
 
-    public static void main(String[] args) throws TaskExecutionException, IOException {
-
-        ConsoleAppender ca = new ConsoleAppender();
-        ca.setWriter(new OutputStreamWriter(System.out));
-        ca.setLayout(new PatternLayout("%-5p [%t]: %m%n"));
-        ca.setThreshold(Level.DEBUG);
-        org.apache.log4j.Logger.getRootLogger().addAppender(ca);
-
-
-        S3Monitor monitor = new S3Monitor();
-        final Map<String, String> taskArgs = Maps.newHashMap();
-        taskArgs.put("config-file", "/Users/vishaka.sekar/AppDynamics/aws-s3-monitoring-extension/src/main/resources/conf/config.yml");
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(new Runnable() {
-            public void run() {
-                try {
-                    monitor.execute(taskArgs, null);
-                } catch (Exception e) {
-                    LOGGER.error("Error while running the task", e);
-                }
-            }
-        }, 2, 60, TimeUnit.SECONDS);
-
-    }
 }
