@@ -10,70 +10,75 @@ package com.appdynamics.extensions.aws.s3;
 
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.model.DimensionFilter;
-import com.amazonaws.services.cloudwatch.model.Metric;
-import com.appdynamics.extensions.aws.config.MetricType;
+import com.appdynamics.extensions.aws.config.Dimension;
+import com.appdynamics.extensions.aws.config.IncludeMetric;
+import com.appdynamics.extensions.aws.dto.AWSMetric;
 import com.appdynamics.extensions.aws.metric.NamespaceMetricStatistics;
 import com.appdynamics.extensions.aws.metric.StatisticType;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessor;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessorHelper;
+import com.appdynamics.extensions.aws.predicate.MultiDimensionPredicate;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-import java.util.*;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.LongAdder;
 
-import static com.appdynamics.extensions.aws.s3.util.Constants.*;
+import static com.appdynamics.extensions.aws.s3.util.Constants.NAMESPACE;
 
 /**
- * @author Satish Muddam, Aditya Jagtiani
+ * @author Vishaka Sekar
  */
 public class S3MetricsProcessor implements MetricsProcessor {
 
-    private List<MetricType> metricTypes;
+    private List<IncludeMetric> includeMetrics;
+   private List<com.appdynamics.extensions.aws.config.Dimension> dimensions;
 
-    private Pattern excludeMetricsPattern;
-
-    private List<String> buckets;
-
-    public S3MetricsProcessor(List<MetricType> metricTypes,
-                              Set<String> excludeMetrics, List<String> buckets) {
-        this.metricTypes = metricTypes;
-        this.excludeMetricsPattern = MetricsProcessorHelper.createPattern(excludeMetrics);
-        this.buckets = buckets;
+    public S3MetricsProcessor(List<IncludeMetric> includeMetrics, List<Dimension> dimensions) {
+        this.includeMetrics = includeMetrics;
+        this.dimensions = dimensions;
     }
 
-    public List<Metric> getMetrics(AmazonCloudWatch awsCloudWatch, String accountName) {
-        List<DimensionFilter> dimensions = new ArrayList<DimensionFilter>();
-
-        DimensionFilter nameDimensionFilter = new DimensionFilter();
-        nameDimensionFilter.withName(DIMENSIONS[0]);
-
-        DimensionFilter storageDimensionFilter = new DimensionFilter();
-        storageDimensionFilter.withName(DIMENSIONS[1]);
-
-
-        dimensions.add(nameDimensionFilter);
-        dimensions.add(storageDimensionFilter);
-
-        S3BucketsPredicate predicate = new S3BucketsPredicate(buckets);
-        return MetricsProcessorHelper.getFilteredMetrics(awsCloudWatch,
+    @Override
+    public List<AWSMetric> getMetrics(AmazonCloudWatch awsCloudWatch, String accountName, LongAdder awsRequestsCounter) {
+        List<DimensionFilter> dimensionFilter = getDimensionFilters();
+        MultiDimensionPredicate multiDimensionPredicate = new MultiDimensionPredicate(dimensions);
+        return MetricsProcessorHelper.getFilteredMetrics(awsCloudWatch, awsRequestsCounter,
                 NAMESPACE,
-                excludeMetricsPattern,
-                dimensions, predicate);
+                includeMetrics,
+                null,multiDimensionPredicate);
     }
 
-    public StatisticType getStatisticType(Metric metric) {
-        return MetricsProcessorHelper.getStatisticType(metric, metricTypes);
+    private List<DimensionFilter> getDimensionFilters() {
+        List<DimensionFilter> dimensionFilters = Lists.newArrayList();
+        for( com.appdynamics.extensions.aws.config.Dimension dimension : dimensions){
+            DimensionFilter dimensionFilter = new DimensionFilter();
+            dimensionFilter.withName(dimension.getName());
+            dimensionFilters.add(dimensionFilter);
+        }
+        return dimensionFilters;
     }
 
-    public Map<String, Double> createMetricStatsMapForUpload(NamespaceMetricStatistics namespaceMetricStats) {
-        Map<String, String> dimensionToMetricPathNameDictionary = new HashMap<String, String>();
-        dimensionToMetricPathNameDictionary.put(DIMENSIONS[0], BUCKET_DIMENSION_VALUE);
-        dimensionToMetricPathNameDictionary.put(DIMENSIONS[1], STORAGE_DIMENSION_VALUE);
+    @Override
+    public StatisticType getStatisticType(AWSMetric awsMetric) {
+        return MetricsProcessorHelper.getStatisticType(awsMetric.getIncludeMetric() , includeMetrics);
+    }
 
+    @Override
+    public List<com.appdynamics.extensions.metrics.Metric> createMetricStatsMapForUpload
+            (NamespaceMetricStatistics namespaceMetricStats) {
+        Map<String, String> dimensionToMetricPathNameDictionary = Maps.newHashMap();
 
+        for (Dimension dimension : dimensions) {
+            dimensionToMetricPathNameDictionary.put(dimension.getName(), dimension.getDisplayName());
+        }
         return MetricsProcessorHelper.createMetricStatsMapForUpload(namespaceMetricStats,
                 dimensionToMetricPathNameDictionary, false);
     }
 
+    @Override
     public String getNamespace() {
         return NAMESPACE;
     }

@@ -1,18 +1,27 @@
-# awsAccessKey, awsSecretKey, displayAccountName are mandatory fields. 
+#This will create the metrics of all tiers(not recommended)
+# Use this only if sim is enabled
+#metricPrefix: "Custom Metrics|Amazon S3|"
+
+#This will create it in specific Tier/Component.
+#Make sure to replace <COMPONENT_ID> with the appropriate one from your environment.
+#To find the <COMPONENT_ID> in your environment,
+#please follow the screenshot https://docs.appdynamics.com/display/PRO42/Build+a+Monitoring+Extension+Using+Java
+
+metricPrefix: "Server|Component:<Component_ID>|Custom Metrics|Amazon S3"
+
+# awsAccessKey, awsSecretKey, displayAccountName are mandatory fields.
 accounts:
   - awsAccessKey: ""
     awsSecretKey: ""
     displayAccountName: "AppD" 
     
-    # Regions where elastiCache is registered
-    # Allowed values: ap-southeast-1, ap-southeast-2, ap-northeast-1, eu-central-1, 
-    #                 us-east-1, eu-west-1, us-west-1, us-west-2, sa-east-1
-    #
-    regions: ["us-west-2"]
+    # Regions where S3 is created
+    # Allowed values: Please refer to regionEndPoints configuration in this file.
+    regions: ["us-west-1"]
     
 credentialsDecryptionConfig:
     enableDecryption: "false"
-    decryptionKey:
+    encryptionKey:
     
 proxyConfig:
     host:
@@ -20,8 +29,68 @@ proxyConfig:
     username:
     password:
 
-#Filter metrics by bucket name. Only metrics from the specified buckets will be extracted. If none are mentioned, metrics from all buckets will be extracted.
-buckets: [".*"]
+# Filters metrics based on Bucket Name provided.
+# Accepts comma separated values and regex patterns.
+# If `.*` is used, all are monitored and if empty, none are monitored
+dimensions:
+   - name: "BucketName"
+     displayName: "Bucket Name"
+     values: ["vishaka-extn"]
+   - name: "FilterId"
+     displayName: "FilterId"
+     values: ["EntireBucket"]
+   - name: "StorageType"
+     displayName: "Storage Type"
+     values: ["AllStorageTypes"] # Valid values:- StandardStorage, StandardIAStorage, OneZoneIAStorage, ReducedRedundancyStorage,
+                    # `.* ` fetches all AllStorageTypes
+
+
+
+## Filter the buckets by tag name. tagValue is optional.
+##if tagValue is not provided, we will fetch all the instances with the tagName.
+#tags:
+#  - name: "Name"
+#    #value: ["tag1", "tag2", "tag3"]
+
+#Allowed values are Basic and Detailed.
+#Refer https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html for more information
+
+# Basic will fire CloudWatch API calls every 5 minutes
+# Detailed will fire CloudWatch API calls every 1 minutes
+cloudWatchMonitoring: "Basic"
+
+#If you want any other interval ( other than the mentioned values in the above configuration )
+#configure it here, if not leave it empty. This value is in minutes
+#cloudWatchMonitoringInterval: 0
+
+concurrencyConfig:
+  noOfAccountThreads: 3
+  noOfRegionThreadsPerAccount: 3
+  noOfMetricThreadsPerRegion: 3
+  #Thread timeout in seconds
+  threadTimeOut: 30
+
+regionEndPoints:
+  us-east-1 : monitoring.us-east-1.amazonaws.com
+  us-east-2 : monitoring.us-east-2.amazonaws.com
+  us-west-1 : monitoring.us-west-1.amazonaws.com #N.California
+  us-west-2 : monitoring.us-west-2.amazonaws.com # Oregon
+  ap-northeast-1 : monitoring.ap-northeast-1.amazonaws.com
+  ap-northeast-2: monitoring.ap-northeast-2.amazonaws.com
+  ap-northeast-3 : monitoring.ap-northeast-3.amazonaws.com
+  ap-south-1 : monitoring.ap-south-1.amazonaws.com
+  ap-southeast-1 : monitoring.ap-southeast-1.amazonaws.com
+  ap-southeast-2 : monitoring.ap-southeast-2.amazonaws.com
+  ca-central-1 : monitoring.ca-central-1.amazonaws.com
+  cn-north-1 : monitoring.cn-north-1.amazonaws.com.cn
+  cn-northwest-1 : monitoring.cn-northwest-1.amazonaws.com.cn
+  eu-central-1 : monitoring.eu-central-1.amazonaws.com
+  eu-west-1 : monitoring.eu-west-1.amazonaws.com
+  eu-west-2 : monitoring.eu-west-2.amazonaws.com
+  eu-west-3 : monitoring.eu-west-3.amazonaws.com
+  sa-east-1 : monitoring.sa-east-1.amazonaws.com
+  us-gov-west-1 : monitoring.us-gov-west-1.amazonaws.com
+
 
 # Global metrics config for all accounts
 metricsConfig:
@@ -29,31 +98,194 @@ metricsConfig:
     # By default, all metrics retrieved from cloudwatch are 'Average' values.	
     # This option allows you to override the metric type. 
     #
-    # metricName supports regex
+    # name supports regex
     # Allowed statTypes are: ave, max, min, sum, samplecount
     #
     # Note: Irrespective of the metric type, value will still be reported as
     # Observed value to the Controller
-    metricTypes:
-      - metricName: ""
-        statType: ""
 
-    excludeMetrics: [ ]
+    includeMetrics:
+   #~~~~~~AWS S3 Storage Metrics(Provided Daily, free metrics)~~~~~~~~~~~~~~~~~
+      - name: "BucketSizeBytes"
+        alias: "Data Stored(Bytes)"
+        statType: "Average"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
 
+      - name: "NumberOfObjects"
+        alias: "Count of Objects" #The total number of objects stored in a bucket for all storage classes
+        statType: "Average"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
+
+    #~~~~~~~~AWS Request Metrics(Provided every minute, we aggregate it over [startTimeInMinsBeforeNow]= 5 min, paid metrics)
+      - name: "AllRequests"
+        alias: "Total Requests Per min (Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "GetRequests"
+        alias: "Get Requests Per min (Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "PutRequests"
+        alias: "Put Requests Per min (Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "DeleteRequests"
+        alias: "Delete Requests Per min (Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "HeadRequests"
+        alias: "Head Requests Per min (Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "PostRequests"
+        alias: "Post Requests Per min (Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "SelectRequests"
+        alias: "Select Requests Per min (Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "ListRequests"
+        alias: "List Requests Per min (Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+
+      #~~~~~~ Bytes level metrics
+
+      - name: "SelectScannedBytes"
+        alias: "Bytes Scanned per request(Unit: Bytes, Stat Type: average)"
+        statType: "Average"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "SelectReturnedBytes"
+        alias: "Bytes Returned per request(Unit: Bytes, Stat Type: average)"
+        statType: "Average"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "BytesDownloaded"
+        alias: "Bytes downloaded per request(Unit: Bytes, Stat Type: average)"
+        statType: "Average"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "BytesUploaded"
+        alias: "Bytes uploaded per request(Unit: Bytes, Stat Type: average)"
+        statType: "Average"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
+
+      ##~~~~Error metrics
+      - name: "4xxErrors"
+        alias: "Total 4xx errors per min(Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "5xxErrors"
+        alias: "Total 5xx errors per min(Unit: Count, Stat Type: sum)"
+        statType: "Sum"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "SUM"
+        clusterRollUpType: "INDIVIDUAL"
+
+      #~~~~~Latency metrics
+      - name: "FirstByteLatency" #per-request time from the complete request being received by S3 bucket to when the response starts to be returned
+        alias: "Response Latency per request(Unit: Milliseconds, Stat Type: Average)"
+        statType: "Average"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
+
+      - name: "TotalRequestLatency" #per-request time from the first byte received to the last byte sent to S3 bucket.
+        alias: "Total Latency per request(Unit: Milliseconds, Stat Type: Average)"
+        statType: "Average"
+        delta: false
+        multiplier: 1
+        aggregationType: "AVERAGE"
+        timeRollUpType: "AVERAGE"
+        clusterRollUpType: "INDIVIDUAL"
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     metricsTimeRange:
       startTimeInMinsBeforeNow: 5
       endTimeInMinsBeforeNow: 0
 
-    # 
-    # The max number of retry attempts for failed retryable requests 
+    # Rate limit ( per second ) for GetMetricStatistics, default value is 400.
+    # https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_limits.html
+    getMetricStatisticsRateLimit: 400
+
+
+    # The max number of retry attempts for failed retryable requests
     # (ex: 5xx error responses from a service) or throttling errors
-    #
+
     maxErrorRetrySize: 0
-
-concurrencyConfig:
-  noOfAccountThreads: 3
-  noOfRegionThreadsPerAccount: 3
-  noOfMetricThreadsPerRegion: 3
-
-#prefix used to show metrics in AppDynamics
-metricPrefix: "Server|Component:<TIER_ID>|Custom Metrics|Amazon S3"
