@@ -9,6 +9,7 @@
 <monitor>
     <name>AWS S3 Monitor</name>
     <type>managed</type>
+    <enabled>true</enabled>
     <description>AWS S3 Monitoring Extension</description>
     <monitor-configuration></monitor-configuration>
     <monitor-run-task>
