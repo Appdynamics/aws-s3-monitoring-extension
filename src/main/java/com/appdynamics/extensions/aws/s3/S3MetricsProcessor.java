@@ -31,7 +31,7 @@ import static com.appdynamics.extensions.aws.s3.util.Constants.NAMESPACE;
 public class S3MetricsProcessor implements MetricsProcessor {
 
     private List<IncludeMetric> includeMetrics;
-   private List<com.appdynamics.extensions.aws.config.Dimension> dimensions;
+    private List<com.appdynamics.extensions.aws.config.Dimension> dimensions;
 
     public S3MetricsProcessor(List<IncludeMetric> includeMetrics, List<Dimension> dimensions) {
         this.includeMetrics = includeMetrics;
@@ -56,7 +56,6 @@ public class S3MetricsProcessor implements MetricsProcessor {
     public List<com.appdynamics.extensions.metrics.Metric> createMetricStatsMapForUpload
             (NamespaceMetricStatistics namespaceMetricStats) {
         Map<String, String> dimensionToMetricPathNameDictionary = Maps.newHashMap();
-
         for (Dimension dimension : dimensions) {
             dimensionToMetricPathNameDictionary.put(dimension.getName(), dimension.getDisplayName());
         }
