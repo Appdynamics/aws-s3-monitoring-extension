@@ -12,19 +12,8 @@ import com.appdynamics.extensions.aws.SingleNamespaceCloudwatchMonitor;
 import com.appdynamics.extensions.aws.collectors.NamespaceMetricStatisticsCollector;
 import com.appdynamics.extensions.aws.config.Configuration;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessor;
-import com.google.common.collect.Maps;
-import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import static com.appdynamics.extensions.aws.s3.util.Constants.DEFAULT_METRIC_PREFIX;
 import static com.appdynamics.extensions.aws.s3.util.Constants.MONITOR_NAME;
 
@@ -77,6 +66,4 @@ public class S3Monitor extends SingleNamespaceCloudwatchMonitor<Configuration> {
         return new S3MetricsProcessor(
                 config.getMetricsConfig().getIncludeMetrics(), config.getDimensions());
     }
-
-
 }
