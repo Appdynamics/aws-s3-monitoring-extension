@@ -5,3 +5,6 @@
 
 ### Sep 17 2018
 * Removed dimension from list-metrics call
+
+### Sep 24 2018
+* Added local metricsTimeRange
