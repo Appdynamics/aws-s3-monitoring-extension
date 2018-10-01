@@ -53,8 +53,9 @@ public class S3MetricsProcessor implements MetricsProcessor {
     }
 
     @Override
-    public List<com.appdynamics.extensions.metrics.Metric> createMetricStatsMapForUpload
-            (NamespaceMetricStatistics namespaceMetricStats) {
+    public List<com.appdynamics.extensions.metrics.Metric> createMetricStatsMapForUpload //todo: override
+            (NamespaceMetricStatistics namespaceMetricStats) { //todo: manually test MultiDimensionPredicate for [] , [""]
+                                                                //todo: test cases for metric path and dimension
         Map<String, String> dimensionToMetricPathNameDictionary = Maps.newHashMap();
         for (Dimension dimension : dimensions) {
             dimensionToMetricPathNameDictionary.put(dimension.getName(), dimension.getDisplayName());

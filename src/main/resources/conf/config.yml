@@ -36,16 +36,15 @@ proxyConfig:
 dimensions:
    - name: "BucketName"
      displayName: "Bucket Name"
-     values: ["vishaka-extn", "vishaka-test-bucket"]
+     values: ["vishaka-extn", "vishaka-test-bucket"] #TODO: add test cases for dimension:[]
    - name: "FilterId"
      displayName: "FilterId"
      values: ["EntireBucket", "test", "prod"]
    - name: "StorageType"
      displayName: "Storage Type"
-     values: ["AllStorageTypes", "StandardStorage"] # Mandatory values for BucketSize:- AllStorageTypes,
-                                                    # Allowed Values for NumberOfObjects:- StandardStorage, StandardIAStorage, OneZoneIAStorage, ReducedRedundancyStorage,)
+     values: ["AllStorageTypes", "StandardStorage"]
 
-
+#TODO: tags support
 #Allowed values are Basic and Detailed.
 #Refer https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html for more information
 
@@ -64,7 +63,7 @@ concurrencyConfig:
   #Thread timeout in seconds
   threadTimeOut: 30
 
-regionEndPoints:
+regionEndPoints: #TODO: move to end
   us-east-1 : monitoring.us-east-1.amazonaws.com
   us-east-2 : monitoring.us-east-2.amazonaws.com
   us-west-1 : monitoring.us-west-1.amazonaws.com #N.California
@@ -87,7 +86,7 @@ regionEndPoints:
 
 
 # Global metrics config for all accounts
-metricsConfig:
+metricsConfig:   #TODO: move it up
 
     # By default, all metrics retrieved from cloudwatch are 'Average' values.
     # This option allows you to override the metric type.
@@ -109,8 +108,8 @@ metricsConfig:
         timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
         metricsTimeRange:
-          startTimeInMinsBeforeNow: 1444
-          endTimeInMinsBeforeNow: 4
+          startTimeInMinsBeforeNow: 1444 #todo:change to 48 hours
+          endTimeInMinsBeforeNow: 0 #change to 0 or 24hrs
 
       - name: "NumberOfObjects"
         alias: "Count of Objects" #The total number of objects stored in a bucket for all storage classes
@@ -121,11 +120,11 @@ metricsConfig:
         timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
         metricsTimeRange:
-          startTimeInMinsBeforeNow: 1444
-          endTimeInMinsBeforeNow: 4
+          startTimeInMinsBeforeNow: 1444 #todo:change to 48hrs
+          endTimeInMinsBeforeNow: 0
 
 
-    #~~~~~~~~AWS Request Metrics(Provided every minute, we aggregate it over [startTimeInMinsBeforeNow]= 5 min, paid metrics)
+    #~~~~~~~~AWS Request Metrics(Provided every minute, paid metrics)
       - name: "AllRequests"
         alias: "Total Requests Per min (Unit - Count; Stat Type - sum)"
         statType: "sum"
@@ -289,4 +288,4 @@ metricsConfig:
     # The max number of retry attempts for failed retryable requests
     # (ex: 5xx error responses from a service) or throttling errors
 
-    maxErrorRetrySize: 0
+    maxErrorRetrySize: 0 #todo: change it to 3
