@@ -36,7 +36,7 @@ proxyConfig:
 dimensions:
    - name: "BucketName"
      displayName: "Bucket Name"
-     values: ["vishaka-extn", "vishaka-test-bucket"] #TODO: add test cases for dimension:[]
+     values: ["vishaka-extn", "vishaka-test-bucket"] #TODO: add test cases for dimension:[] - no statistic received
    - name: "FilterId"
      displayName: "FilterId"
      values: ["EntireBucket", "test", "prod"]
@@ -63,30 +63,8 @@ concurrencyConfig:
   #Thread timeout in seconds
   threadTimeOut: 30
 
-regionEndPoints: #TODO: move to end
-  us-east-1 : monitoring.us-east-1.amazonaws.com
-  us-east-2 : monitoring.us-east-2.amazonaws.com
-  us-west-1 : monitoring.us-west-1.amazonaws.com #N.California
-  us-west-2 : monitoring.us-west-2.amazonaws.com # Oregon
-  ap-northeast-1 : monitoring.ap-northeast-1.amazonaws.com
-  ap-northeast-2: monitoring.ap-northeast-2.amazonaws.com
-  ap-northeast-3 : monitoring.ap-northeast-3.amazonaws.com
-  ap-south-1 : monitoring.ap-south-1.amazonaws.com
-  ap-southeast-1 : monitoring.ap-southeast-1.amazonaws.com
-  ap-southeast-2 : monitoring.ap-southeast-2.amazonaws.com
-  ca-central-1 : monitoring.ca-central-1.amazonaws.com
-  cn-north-1 : monitoring.cn-north-1.amazonaws.com.cn
-  cn-northwest-1 : monitoring.cn-northwest-1.amazonaws.com.cn
-  eu-central-1 : monitoring.eu-central-1.amazonaws.com
-  eu-west-1 : monitoring.eu-west-1.amazonaws.com
-  eu-west-2 : monitoring.eu-west-2.amazonaws.com
-  eu-west-3 : monitoring.eu-west-3.amazonaws.com
-  sa-east-1 : monitoring.sa-east-1.amazonaws.com
-  us-gov-west-1 : monitoring.us-gov-west-1.amazonaws.com
-
-
 # Global metrics config for all accounts
-metricsConfig:   #TODO: move it up
+metricsConfig:
 
     # By default, all metrics retrieved from cloudwatch are 'Average' values.
     # This option allows you to override the metric type.
@@ -108,8 +86,8 @@ metricsConfig:   #TODO: move it up
         timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
         metricsTimeRange:
-          startTimeInMinsBeforeNow: 1444 #todo:change to 48 hours
-          endTimeInMinsBeforeNow: 0 #change to 0 or 24hrs
+          startTimeInMinsBeforeNow: 2880
+          endTimeInMinsBeforeNow: 1440
 
       - name: "NumberOfObjects"
         alias: "Count of Objects" #The total number of objects stored in a bucket for all storage classes
@@ -120,8 +98,8 @@ metricsConfig:   #TODO: move it up
         timeRollUpType: "AVERAGE"
         clusterRollUpType: "INDIVIDUAL"
         metricsTimeRange:
-          startTimeInMinsBeforeNow: 1444 #todo:change to 48hrs
-          endTimeInMinsBeforeNow: 0
+          startTimeInMinsBeforeNow: 2880
+          endTimeInMinsBeforeNow: 1440
 
 
     #~~~~~~~~AWS Request Metrics(Provided every minute, paid metrics)
@@ -276,6 +254,8 @@ metricsConfig:   #TODO: move it up
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
     metricsTimeRange:
       startTimeInMinsBeforeNow: 9
       endTimeInMinsBeforeNow: 4
@@ -288,4 +268,27 @@ metricsConfig:   #TODO: move it up
     # The max number of retry attempts for failed retryable requests
     # (ex: 5xx error responses from a service) or throttling errors
 
-    maxErrorRetrySize: 0 #todo: change it to 3
+    maxErrorRetrySize: 3
+
+
+
+regionEndPoints:
+  us-east-1 : monitoring.us-east-1.amazonaws.com
+  us-east-2 : monitoring.us-east-2.amazonaws.com
+  us-west-1 : monitoring.us-west-1.amazonaws.com
+  us-west-2 : monitoring.us-west-2.amazonaws.com
+  ap-northeast-1 : monitoring.ap-northeast-1.amazonaws.com
+  ap-northeast-2: monitoring.ap-northeast-2.amazonaws.com
+  ap-northeast-3 : monitoring.ap-northeast-3.amazonaws.com
+  ap-south-1 : monitoring.ap-south-1.amazonaws.com
+  ap-southeast-1 : monitoring.ap-southeast-1.amazonaws.com
+  ap-southeast-2 : monitoring.ap-southeast-2.amazonaws.com
+  ca-central-1 : monitoring.ca-central-1.amazonaws.com
+  cn-north-1 : monitoring.cn-north-1.amazonaws.com.cn
+  cn-northwest-1 : monitoring.cn-northwest-1.amazonaws.com.cn
+  eu-central-1 : monitoring.eu-central-1.amazonaws.com
+  eu-west-1 : monitoring.eu-west-1.amazonaws.com
+  eu-west-2 : monitoring.eu-west-2.amazonaws.com
+  eu-west-3 : monitoring.eu-west-3.amazonaws.com
+  sa-east-1 : monitoring.sa-east-1.amazonaws.com
+  us-gov-west-1 : monitoring.us-gov-west-1.amazonaws.com

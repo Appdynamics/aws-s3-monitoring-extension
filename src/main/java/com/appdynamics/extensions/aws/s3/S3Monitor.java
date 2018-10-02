@@ -29,7 +29,9 @@ public class S3Monitor extends SingleNamespaceCloudwatchMonitor<Configuration> {
     }
 
     @Override
-    public String getMonitorName() { return MONITOR_NAME; }
+    public String getMonitorName() {
+        return MONITOR_NAME;
+    }
 
     @Override
     protected String getDefaultMetricPrefix() {
@@ -66,4 +68,5 @@ public class S3Monitor extends SingleNamespaceCloudwatchMonitor<Configuration> {
         return new S3MetricsProcessor(
                 config.getMetricsConfig().getIncludeMetrics(), config.getDimensions());
     }
+
 }
