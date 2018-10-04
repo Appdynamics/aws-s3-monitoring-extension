@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.LongAdder;
 
-import static com.appdynamics.extensions.aws.s3.util.Constants.NAMESPACE;
+import static com.appdynamics.extensions.aws.s3.util.Constants.*;
 
 /**
  * @author Vishaka Sekar
@@ -71,7 +71,6 @@ public class S3MetricsProcessor implements MetricsProcessor {
             for (RegionMetricStatistics regionMetricStatistics : accountMetricStatistics.getRegionMetricStatisticsList()) {
                 String regionPrefix = regionMetricStatistics.getRegion();
 
-
                 for (MetricStatistic metricStatistic : regionMetricStatistics.getMetricStatisticsList()) {
 
                     Map<String, String> dimensionValueMap = Maps.newHashMap();
@@ -80,7 +79,6 @@ public class S3MetricsProcessor implements MetricsProcessor {
                             metricStatistic.getMetric().getMetric().getDimensions()) {
                         dimensionValueMap.put(dimension.getName(), dimension.getValue());
                     }
-
                         StringBuilder partialMetricPath = new StringBuilder();
                         buildMetricPath(partialMetricPath, true,
                                 accountPrefix, regionPrefix);
@@ -124,18 +122,18 @@ public class S3MetricsProcessor implements MetricsProcessor {
         for (String element : elements) {
             partialMetricPath.append(element);
             if (appendMetricSeparator) {
-                partialMetricPath.append("|");
+                partialMetricPath.append(METRIC_SEPARATOR);
             }
         }
     }
 
     private void arrangeMetricPathHierarchy(StringBuilder partialMetricPath, Map<String, String> dimensionDisplayNameMap,
                                         Map<String, String> dimensionValueMap) {
-    String bucketNameDimension = "BucketName";
+    String bucketNameDimension = BUCKET_NAME;
     String bucketNameDisplayName = dimensionDisplayNameMap.get(bucketNameDimension);
-    String filterIdDimension = "FilterId";
+    String filterIdDimension = FILTER_ID;
     String filterIdDisplayName = dimensionDisplayNameMap.get(filterIdDimension);
-    String storageTypeDimension = "StorageType";
+    String storageTypeDimension = STORAGE_TYPE;
     String storageTypeDisplayName = dimensionDisplayNameMap.get(storageTypeDimension);
 
     //<Account> | <Region> | Bucket Name | <BucketName> |
@@ -143,7 +141,7 @@ public class S3MetricsProcessor implements MetricsProcessor {
 
     //<Account> | <Region> | Bucket Name | <BucketName> | Filter Id | <FilterIdValue>
     if(dimensionValueMap.get(filterIdDimension)!= null){
-     buildMetricPath(partialMetricPath, true, filterIdDisplayName, dimensionValueMap.get(filterIdDimension));
+        buildMetricPath(partialMetricPath, true, filterIdDisplayName, dimensionValueMap.get(filterIdDimension));
     }
     // <Account> | <Region> | Bucket Name | <BucketName> | Storage Type | <StorageTypes>
     if(dimensionValueMap.get(storageTypeDimension) != null){

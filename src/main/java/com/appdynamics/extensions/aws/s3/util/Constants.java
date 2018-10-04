@@ -22,4 +22,12 @@ public class Constants {
 
     public static final String MONITOR_NAME = "S3Monitor";
 
+    public static final String METRIC_SEPARATOR = "|";
+
+    public static final String BUCKET_NAME = "BucketName";
+
+    public static final String FILTER_ID = "FilterId";
+
+    public static final String STORAGE_TYPE = "StorageType";
+
 }

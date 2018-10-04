@@ -7,4 +7,7 @@
 * Removed dimension from list-metrics call
 
 ### Sep 24 2018
-* Added local metricsTimeRange
+* Added local metricsTimeRange for free metrics
+
+### Oct 1 2018
+* Updated metric path hierarchy, added test-cases for updated metric path

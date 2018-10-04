@@ -14,14 +14,12 @@ Captures S3 statistics from Amazon CloudWatch and displays them in the AppDynami
 
 
 ## Installation
-
 1. Run 'mvn clean install' from `aws-s3-monitoring-extension`
 2. Copy and unzip `AWSS3Monitor-\<version\>.zip` from `target` directory into ` \<machine_agent_dir\>/monitors/`
 3. Edit config.yml file in AWSS3Monitor/conf and provide the required configuration (see Configuration section)
 4. Restart the Machine Agent.
 
 ## Configuration
-
 In order to use the extension, you need to update the config.yml file that is present in the extension folder. The following is a step-by-step explanation of the configurable fields that are present in the `config.yml` file.
 
 1. If SIM is enabled, then use the following metricPrefix -
@@ -30,12 +28,9 @@ In order to use the extension, you need to update the config.yml file that is pr
 
    Else, configure the "**COMPONENT_ID**" under which the metrics need to be reported. This can be done by changing the value of `<COMPONENT_ID>` in
    `metricPrefix: "Server|Component:<COMPONENT_ID>|Custom Metrics|AWS S3|"`.
-
    For example,
 
-    ```
-    metricPrefix: "Server|Component:100|Custom Metrics|AWS S3|"
-    ```
+    `metricPrefix: "Server|Component:100|Custom Metrics|AWS S3|"`
 
 2. Provide **accessKey**(required) and **secretKey**(required) of your account(s), also provide **displayAccountName**(any name that represents your account) and
    **regions**(required). If you are running this extension inside an EC2 instance which has **IAM profile** configured then you don't have to configure **accessKey** and  **secretKey** values, extension will use **IAM profile** to authenticate. You can provide multiple accounts and regions as below -
@@ -91,9 +86,9 @@ In order to use the extension, you need to update the config.yml file that is pr
 
    For example,
    ```
-   - name: "Bytes"
+   - name: "BucketSizeBytes"
      alias: "Bytes per minute (Unit - byte; StatType - sum)"
-     statType: "sum"
+     statType: "ave"
      aggregationType: "AVERAGE"
      timeRollUpType: "AVERAGE"
      clusterRollUpType: "INDIVIDUAL"
@@ -110,7 +105,7 @@ In order to use the extension, you need to update the config.yml file that is pr
 
 ## Metrics
 
-Typical metric path: **Application Infrastructure Performance|\<Tier\>|Custom Metrics|Amazon S3|\<Account Name\>|\<Region\>|Bucket Name|\<Bucket Name\>|Storage Type|\<Storage Type\>** followed by the metrics defined in the link below:
+Typical metric path: `Application Infrastructure Performance|<Tier>|Custom Metrics|Amazon S3|<Account Name>|<Region>|Bucket Name|<Bucket Name>|Storage Type|<Storage Type>` followed by the metrics defined in the link below:
 
 - [S3 Metrics](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/s3-metricscollected.html)
 
@@ -134,10 +129,11 @@ Please provide the following in order for us to assist you better.
 1. Stop the running machine agent.
 2. Delete all existing logs under `<MachineAgent>/logs`.
 3. Please enable debug logging by editing the file `<MachineAgent>/conf/logging/log4j.xml`. Change the level value of the following `<logger>` elements to debug.
-   ```
+    ```
    <logger name="com.singularity">
    <logger name="com.appdynamics">
    ```
+
 4. Start the machine agent and please let it run for 10 mins. Then zip and upload all the logs in the directory `<MachineAgent>/logs/*`.
 5. Attach the zipped `<MachineAgent>/conf/*` directory here.
 6. Attach the zipped `<MachineAgent>/monitors/ExtensionFolderYouAreHavingIssuesWith` directory here.

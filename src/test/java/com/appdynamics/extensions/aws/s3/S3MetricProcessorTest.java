@@ -1,3 +1,11 @@
+/*
+ * Copyright 2018. AppDynamics LLC and its affiliates.
+ * All Rights Reserved.
+ * This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
+ * The copyright notice above does not evidence any actual or intended publication of such source code.
+ *
+ */
+
 package com.appdynamics.extensions.aws.s3;
 
 import com.appdynamics.extensions.aws.config.Dimension;
@@ -69,7 +77,7 @@ public class S3MetricProcessorTest {
         List<Dimension> dimensionsFromConfig = Lists.newArrayList();
         Dimension dimension1 = new Dimension();
         dimension1.setName("BucketName");
-        dimension1.setDisplayName("Bucket Name ");
+        dimension1.setDisplayName("Bucket Name");
         dimensionsFromConfig.add(dimension1);
 
         Dimension dimension2 = new Dimension();
@@ -82,6 +90,8 @@ public class S3MetricProcessorTest {
         List<Metric> stats = s3MetricsProcessor.createMetricStatsMapForUpload(namespaceMetricStatistics);
 
         Assert.assertNotNull(stats.get(0));
+        Assert.assertEquals(stats.get(0).getMetricPath(),
+                "Custom Metric|AWS S3|AppD|us-west-1|Bucket Name|test-bucket|Storage Type|StandardStorage|testmetric" );
 
     }
 }

@@ -31,12 +31,12 @@ proxyConfig:
 
 # Filters metrics based on Bucket Name provided.
 # Accepts comma separated values and regex patterns.
-# '.*' is used, all are monitored and if empty, none are monitored
+# ".*" is used, all are monitored and if empty, none are monitored
 
 dimensions:
    - name: "BucketName"
      displayName: "Bucket Name"
-     values: ["vishaka-extn", "vishaka-test-bucket"] #TODO: add test cases for dimension:[] - no statistic received
+     values: ["vishaka-extn", "vishaka-test-bucket"]
    - name: "FilterId"
      displayName: "FilterId"
      values: ["EntireBucket", "test", "prod"]
@@ -44,7 +44,7 @@ dimensions:
      displayName: "Storage Type"
      values: ["AllStorageTypes", "StandardStorage"]
 
-#TODO: tags support
+
 #Allowed values are Basic and Detailed.
 #Refer https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html for more information
 
@@ -90,8 +90,7 @@ metricsConfig:
           endTimeInMinsBeforeNow: 1440
 
       - name: "NumberOfObjects"
-        alias: "Count of Objects" #The total number of objects stored in a bucket for all storage classes
-        statType: "ave"
+        alias: "Count of Objects" #The total number of objects stored in each storage class
         delta: false
         multiplier: 1
         aggregationType: "AVERAGE"
@@ -254,8 +253,6 @@ metricsConfig:
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
     metricsTimeRange:
       startTimeInMinsBeforeNow: 9
       endTimeInMinsBeforeNow: 4
