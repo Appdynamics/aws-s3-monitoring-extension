@@ -15,9 +15,10 @@ Captures S3 statistics from Amazon CloudWatch and displays them in the AppDynami
 
 ## Installation
 1. Run 'mvn clean install' from `aws-s3-monitoring-extension`
-2. Copy and unzip `AWSS3Monitor-\<version\>.zip` from `target` directory into ` \<machine_agent_dir\>/monitors/`
+2. Copy and unzip `AWSS3Monitor-\<version\>.zip` from `target` directory into ` \<machine_agent_dir\>/monitors/`.<br/>Please place the extension in the <b>"monitors"</b> directory of your Machine Agent installation directory. Do not place the extension in the <b>"extensions"</b> directory of your Machine Agent installation directory.
 3. Edit config.yml file in AWSS3Monitor/conf and provide the required configuration (see Configuration section)
 4. Restart the Machine Agent.
+
 
 ## Configuration
 In order to use the extension, you need to update the config.yml file that is present in the extension folder. The following is a step-by-step explanation of the configurable fields that are present in the `config.yml` file.
@@ -54,7 +55,17 @@ In order to use the extension, you need to update the config.yml file that is pr
        enableDecryption: "true"
        encryptionKey: "XXXXXXXX"
    ```
-4. To report metrics only from specific dimension values, configure the `dimension` section.
+
+4. Provide all valid proxy information if you use it. If not, leave this section as is.
+       ```
+       proxyConfig:
+         host:
+         port:
+         username:
+         password:
+       ```
+
+5. To report metrics only from specific dimension values, configure the `dimension` section as below -
 
     ```
     dimensions:
@@ -68,9 +79,11 @@ In order to use the extension, you need to update the config.yml file that is pr
         displayName: "Bucket Name"
         values: ["Sample"]
     ```
-     If `.*` is used, all dimension values are monitored and if empty, none are monitored.
-5. Configure the metrics section.
 
+   If these fields are left empty, the metrics which require that dimension will not be reported.
+   In order to monitor everything under a dimension, you can simply use ".*" to pull everything from your AWS Environment.
+
+6.  Configure the metrics section.
     For configuring the metrics, the following properties can be used:
 
     |     Property      |   Default value |         Possible values         |                                              Description                                                                                                |
@@ -98,16 +111,42 @@ In order to use the extension, you need to update the config.yml file that is pr
 
    **All these metric properties are optional, and the default value shown in the table is applied to the metric(if a property has not been specified) by default.**
 
+
+7. CloudWatch metrics are delivered on a best-effort basis. This means that the delivery of metrics is not guaranteed to be on-time.
+  There may be a case where the metric is updated in CloudWatch much later than when it was processed, with an associated delay.
+  For S3, the delay can be 4 - 5 minutes. There is a possibility that the extension does not capture the metric, which is the reason there is a time window. The time window allows
+  the metric to be updated in CloudWatch before the extension collects it.
+
+    ```
+    metricsTimeRange:
+      startTimeInMinsBeforeNow: 9
+      endTimeInMinsBeforeNow: 4
+    ```
+8. This field is set as per the defaults suggested by AWS. You can change this if your limit is different.
+    ```
+    getMetricStatisticsRateLimit: 400
+    ```
+9. The maximum number of retry attempts for failed requests that can be re-tried.
+    ```
+    maxErrorRetrySize: 3
+    ```
 ### config.yml
 
  Please avoid using tab (\t) when editing yaml files. Please copy all the contents of the config.yml file and go to [Yaml Validator](http://www.yamllint.com/) . On reaching the website, paste the contents and press the “Go” button on the bottom left.
  If you get a valid output, that means your formatting is correct and you may move on to the next step.
 
 ## Metrics
+The AWS S3 Extension provides two categories of metrics for AWS S3 as listed [here](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/s3-metricscollected.html).
 
-Typical metric path: `Application Infrastructure Performance|<Tier>|Custom Metrics|Amazon S3|<Account Name>|<Region>|Bucket Name|<Bucket Name>|Storage Type|<Storage Type>` followed by the metrics defined in the link below:
+1. <b>AWS S3 CloudWatch Storage Metrics</b><br/>
+  The AWS S3 Extension provides storage metrics, by default.These metrics are provided daily, free of cost by CloudWatch.
+  However, the behavior observed in CloudWatch for the storage metrics is that at 00:00 UTC, the metrics are provided with a timestamp of the previous day.<br/>
+  For example, if the  current timestamp is Oct 5th - 00:00 UTC, the storage metrics are reported in CloudWatch with a timestamp of
+  Oct 4th - 00:00 UTC. The metrics are delayed by 24 hours. This is the reason the extension also reports storage metrics with a latency of 24 hours.
 
-- [S3 Metrics](http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/s3-metricscollected.html)
+2. <b>AWS S3 CloudWatch Request Metrics</b><br/>
+  Request metrics are are paid metrics available in AWS CloudWatch every 1 minute with some latency(upto 4 min). Request metrics have to be enabled as described [here](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/configure-metrics.html).
+  The extension also supports filtering of metrics on a subset of objects in S3.To get filter-level metrics, a metrics filter has to be enabled on the buckets that are being monitored as described [here](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/configure-metrics-filter.html).
 
 ## Credentials Encryption
 Please visit [this page](https://community.appdynamics.com/t5/Knowledge-Base/How-to-use-Password-Encryption-with-Extensions/ta-p/29397) to get detailed instructions on password encryption. The steps in this document will guide you through the whole process.
@@ -149,4 +188,5 @@ Always feel free to fork and contribute any changes directly here on [GitHub](ht
    |--------------------------|------------|
    |Extension Version         |2.0.0       |
    |Controller Compatibility  |4.4 or Later|
-   |Last Update               |18 Sep 2018 |
+   |Last Update               |Oct 4, 2018 |
+   |List of Changes           |[Change Log](https://github.com/Appdynamics/aws-s3-monitoring-extension/blob/master/README.md)|

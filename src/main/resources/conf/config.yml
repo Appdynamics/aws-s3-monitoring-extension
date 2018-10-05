@@ -36,20 +36,17 @@ proxyConfig:
 dimensions:
    - name: "BucketName"
      displayName: "Bucket Name"
-     values: ["vishaka-extn", "vishaka-test-bucket"]
+     values: []
    - name: "FilterId"
      displayName: "FilterId"
-     values: ["EntireBucket", "test", "prod"]
+     values: []
    - name: "StorageType"
      displayName: "Storage Type"
-     values: ["AllStorageTypes", "StandardStorage"]
+     values: []
 
 
-#Allowed values are Basic and Detailed.
-#Refer https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch-new.html for more information
 
 # Basic will fire CloudWatch API calls every 5 minutes
-# Detailed will fire CloudWatch API calls every 1 minutes
 cloudWatchMonitoring: "Basic"
 
 #If you want any other interval ( other than the mentioned values in the above configuration )
@@ -66,7 +63,7 @@ concurrencyConfig:
 # Global metrics config for all accounts
 metricsConfig:
 
-    # By default, all metrics retrieved from cloudwatch are 'Average' values.
+    # By default, all metrics retrieved from CloudWatch are 'Average' values.
     # This option allows you to override the metric type.
     #
     # name supports regex
