@@ -50,7 +50,7 @@ dimensions:
 
 cloudWatchMonitoring: "Basic"
 
-#If you want any other interval ( other than the mentioned values in the above configuration )
+#If you want any other interval ( other than the mentioned "Basic" in the above configuration )
 #configure it here, if not leave it empty. This value is in minutes
 #cloudWatchMonitoringInterval: 0
 
