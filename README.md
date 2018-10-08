@@ -57,13 +57,13 @@ In order to use the extension, you need to update the config.yml file that is pr
    ```
 
 4. Provide all valid proxy information if you use it. If not, leave this section as is.
-       ```
+
        proxyConfig:
          host:
          port:
          username:
          password:
-       ```
+        
 
 5. To report metrics only from specific dimension values, configure the `dimension` section as below -
 
@@ -189,4 +189,4 @@ Always feel free to fork and contribute any changes directly here on [GitHub](ht
    |Extension Version         |2.0.0       |
    |Controller Compatibility  |4.4 or Later|
    |Last Update               |Oct 4, 2018 |
-   |List of Changes           |[Change Log](https://github.com/Appdynamics/aws-s3-monitoring-extension/blob/master/README.md)|
+   |List of Changes           |[Change Log](https://github.com/Appdynamics/aws-s3-monitoring-extension/blob/master/CHANGELOG.md)|

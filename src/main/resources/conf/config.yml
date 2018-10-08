@@ -47,6 +47,7 @@ dimensions:
 
 
 # Basic will fire CloudWatch API calls every 5 minutes
+
 cloudWatchMonitoring: "Basic"
 
 #If you want any other interval ( other than the mentioned values in the above configuration )
