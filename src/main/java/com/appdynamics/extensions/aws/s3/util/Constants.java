@@ -8,23 +8,26 @@
 
 package com.appdynamics.extensions.aws.s3.util;
 
+
+
 /**
- * Created by aditya.jagtiani on 11/10/17.
+ * @author vishaka.sekar
+ * @since 09/10/18
  */
 public class Constants {
 
     public static final String NAMESPACE = "AWS/S3";
 
-    public static final String [] DIMENSIONS = {"BucketName", "StorageType"};
+    public static final String DEFAULT_METRIC_PREFIX = "Custom Metrics|Amazon S3";
 
-    public static final String BUCKET_DIMENSION_NAME = "BucketName";
+    public static final String MONITOR_NAME = "S3Monitor";
 
-    public static final String STORAGE_DIMENSION_NAME = "StorageType";
+    public static final String METRIC_SEPARATOR = "|";
 
-    public static final String BUCKET_DIMENSION_VALUE = "Bucket Name";
+    public static final String BUCKET_NAME = "BucketName";
 
-    public static final String STORAGE_DIMENSION_VALUE = "Storage Type";
+    public static final String FILTER_ID = "FilterId";
 
-
+    public static final String STORAGE_TYPE = "StorageType";
 
 }

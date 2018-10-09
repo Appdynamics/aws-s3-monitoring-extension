@@ -9,6 +9,7 @@
 <monitor>
     <name>AWS S3 Monitor</name>
     <type>managed</type>
+    <enabled>true</enabled>
     <description>AWS S3 Monitoring Extension</description>
     <monitor-configuration></monitor-configuration>
     <monitor-run-task>
@@ -21,8 +22,7 @@
         <execution-timeout-in-secs>60</execution-timeout-in-secs>
         
 		<task-arguments>
-			<argument name="config-file" is-required="true" default-value="monitors/AWSS3Monitor/conf/config.yaml" />
-			<argument name="region-endpoints-config" is-required="true" default-value="monitors/AWSS3Monitor/conf/region-endpoints.yaml" />
+			<argument name="config-file" is-required="true" default-value="monitors/AWSS3Monitor/config.yml" />
 		</task-arguments>
             
         <java-task>
