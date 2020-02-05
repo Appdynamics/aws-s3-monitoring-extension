@@ -186,7 +186,7 @@ Always feel free to fork and contribute any changes directly here on [GitHub](ht
 ## Version
    |Name|Version|
    |--------------------------|------------|
-   |Extension Version         |2.0.1       |
+   |Extension Version         |2.0.2       |
    |Controller Compatibility  |4.4 or Later|
    |Machine Agent             |4.5.13+     |
    |Last Update               |02/05/2020  |
