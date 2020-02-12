@@ -14,6 +14,11 @@ import com.appdynamics.extensions.aws.config.Configuration;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessor;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.appdynamics.extensions.aws.s3.util.Constants.DEFAULT_METRIC_PREFIX;
 import static com.appdynamics.extensions.aws.s3.util.Constants.MONITOR_NAME;
 
@@ -39,8 +44,8 @@ public class S3Monitor extends SingleNamespaceCloudwatchMonitor<Configuration> {
     }
 
     @Override
-    protected int getTaskCount() {
-        return 3;
+    protected List<Map<String, ?>> getServers() {
+        return new ArrayList<Map<String, ?>>();
     }
 
     @Override
