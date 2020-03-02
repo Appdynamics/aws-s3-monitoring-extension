@@ -190,9 +190,9 @@ Always feel free to fork and contribute any changes directly here on [GitHub](ht
 ## Version
    |Name|Version|
    |--------------------------|------------|
-   |Extension Version         |2.0.2       |
+   |Extension Version         |2.0.3       |
    |Controller Compatibility  |4.4 or Later|
    |Machine Agent             |4.5.13+     |
-   |Last Update               |02/05/2020  |
+   |Last Update               |03/02/2020  |
    
  List of changes to this extension can be found [here](https://github.com/Appdynamics/aws-s3-monitoring-extension/blob/master/CHANGELOG.md)|
