@@ -12,7 +12,8 @@ import com.appdynamics.extensions.aws.SingleNamespaceCloudwatchMonitor;
 import com.appdynamics.extensions.aws.collectors.NamespaceMetricStatisticsCollector;
 import com.appdynamics.extensions.aws.config.Configuration;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessor;
-import org.apache.log4j.Logger;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import static com.appdynamics.extensions.aws.s3.util.Constants.MONITOR_NAME;
  */
 public class S3Monitor extends SingleNamespaceCloudwatchMonitor<Configuration> {
 
-    private static final Logger LOGGER = Logger.getLogger(S3Monitor.class);
+    private static final Logger LOGGER = ExtensionsLoggerFactory.getLogger(S3Monitor.class);
 
     public S3Monitor() {
         super(Configuration.class);

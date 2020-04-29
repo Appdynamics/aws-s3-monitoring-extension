@@ -16,9 +16,10 @@ import com.appdynamics.extensions.aws.metric.*;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessor;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessorHelper;
 import com.appdynamics.extensions.aws.predicate.MultiDimensionPredicate;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.metrics.Metric;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class S3MetricsProcessor implements MetricsProcessor {
 
     private List<IncludeMetric> includeMetrics;
     private List<Dimension> dimensions;
-    private static final Logger logger = Logger.getLogger(S3Monitor.class);
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(S3Monitor.class);
 
     public S3MetricsProcessor(List<IncludeMetric> includeMetrics, List<Dimension> dimensions) {
         this.includeMetrics = includeMetrics;
