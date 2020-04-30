@@ -10,7 +10,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.appdynamics.extensions</groupId>
 	<artifactId>aws-s3-monitoring-extension</artifactId>
-	<version>2.0.3</version>
+	<version>2.0.4</version>
 	<name>AWS S3 Monitoring Extension</name>
 	
 	<properties>
@@ -23,14 +23,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.appdynamics</groupId>
-			<artifactId>machine-agent</artifactId>
-			<version>3.7.11</version>
+			<artifactId>machineagent-repackaged</artifactId>
+			<version>4.0.5.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.appdynamics.extensions</groupId>
 			<artifactId>aws-cloudwatch-exts-commons</artifactId>
-			<version>2.2.1</version>
+			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -60,8 +60,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>8</source>
-					<target>8</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>

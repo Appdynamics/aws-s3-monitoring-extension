@@ -9,6 +9,7 @@
 package com.appdynamics.extensions.aws.s3;
 
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
+import com.amazonaws.services.cloudwatch.model.DimensionFilter;
 import com.appdynamics.extensions.aws.config.Dimension;
 import com.appdynamics.extensions.aws.config.IncludeMetric;
 import com.appdynamics.extensions.aws.dto.AWSMetric;
@@ -16,9 +17,11 @@ import com.appdynamics.extensions.aws.metric.*;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessor;
 import com.appdynamics.extensions.aws.metric.processors.MetricsProcessorHelper;
 import com.appdynamics.extensions.aws.predicate.MultiDimensionPredicate;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.metrics.Metric;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +38,8 @@ public class S3MetricsProcessor implements MetricsProcessor {
 
     private List<IncludeMetric> includeMetrics;
     private List<Dimension> dimensions;
-    private static final Logger logger = Logger.getLogger(S3Monitor.class);
+    private List<DimensionFilter> dimensionFilters;
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(S3MetricsProcessor.class);
 
     public S3MetricsProcessor(List<IncludeMetric> includeMetrics, List<Dimension> dimensions) {
         this.includeMetrics = includeMetrics;
@@ -45,10 +49,11 @@ public class S3MetricsProcessor implements MetricsProcessor {
     @Override
     public List<AWSMetric> getMetrics(AmazonCloudWatch awsCloudWatch, String accountName, LongAdder awsRequestsCounter) {
         MultiDimensionPredicate multiDimensionPredicate = new MultiDimensionPredicate(dimensions);
+        dimensionFilters = getDimensionFilters();
         return MetricsProcessorHelper.getFilteredMetrics(awsCloudWatch, awsRequestsCounter,
                 NAMESPACE,
                 includeMetrics,
-                null, multiDimensionPredicate);
+                dimensionFilters, multiDimensionPredicate);
     }
 
     @Override
@@ -148,5 +153,15 @@ public class S3MetricsProcessor implements MetricsProcessor {
         buildMetricPath(partialMetricPath, true, storageTypeDisplayName, dimensionValueMap.get(storageTypeDimension));
     }
 
+    }
+
+    private List<DimensionFilter> getDimensionFilters() {
+        List<DimensionFilter> dimensionFilters = Lists.newArrayList();
+        for (Dimension dimension : dimensions) {
+            DimensionFilter dbDimensionFilter = new DimensionFilter();
+            dbDimensionFilter.withName(dimension.getName());
+            dimensionFilters.add(dbDimensionFilter);
+        }
+        return dimensionFilters;
     }
 }

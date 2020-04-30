@@ -287,3 +287,22 @@ regionEndPoints:
   eu-west-3 : monitoring.eu-west-3.amazonaws.com
   sa-east-1 : monitoring.sa-east-1.amazonaws.com
   us-gov-west-1 : monitoring.us-gov-west-1.amazonaws.com
+
+# Default information needs to be updated
+controllerInfo:
+  controllerHost: "controller"
+  controllerPort: 8080
+  account: "customer1"
+  username: "user1"
+  password: "welcome"
+  encryptedPassword: ""
+  encryptionKey: ""
+  controllerSslEnabled: false
+  enableOrchestration: false
+  uniqueHostId: ""
+  accountAccessKey: ""
+  machinePath: ""
+  simEnabled: true
+  applicationName: ""
+  tierName: ""
+  nodeName: ""
