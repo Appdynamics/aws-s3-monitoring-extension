@@ -306,3 +306,5 @@ controllerInfo:
   applicationName: ""
   tierName: ""
   nodeName: ""
+
+enableHealthChecks: false

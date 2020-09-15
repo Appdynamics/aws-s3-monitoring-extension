@@ -1,3 +1,6 @@
+### Version 2.0.5
+* Fixed issue related to advance paid metrics for S3
+
 ### Version 2.0.4
 * Updated the aws-cloudwatch-exts-commons to 2.2.2 from 2.2.1
 
