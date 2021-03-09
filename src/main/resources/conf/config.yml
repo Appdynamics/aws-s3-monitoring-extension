@@ -265,7 +265,8 @@ metricsConfig:
 
     maxErrorRetrySize: 3
 
-
+#Encryption key for your controllerInfo password
+encryptionKey: ""
 
 regionEndPoints:
   us-east-1 : monitoring.us-east-1.amazonaws.com
@@ -296,7 +297,6 @@ controllerInfo:
   username: "user1"
   password: "welcome"
   encryptedPassword: ""
-  encryptionKey: ""
   controllerSslEnabled: false
   enableOrchestration: false
   uniqueHostId: ""

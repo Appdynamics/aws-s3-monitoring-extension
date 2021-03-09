@@ -53,7 +53,7 @@ public class S3MetricsProcessor implements MetricsProcessor {
         return MetricsProcessorHelper.getFilteredMetrics(awsCloudWatch, awsRequestsCounter,
                 NAMESPACE,
                 includeMetrics,
-                dimensionFilters, multiDimensionPredicate);
+                null, multiDimensionPredicate);
     }
 
     @Override
