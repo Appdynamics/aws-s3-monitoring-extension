@@ -10,18 +10,15 @@ Captures S3 statistics from Amazon CloudWatch and displays them in the AppDynami
     cloudwatch:GetMetricStatistics
     ```
 2. Before the extension is installed, the prerequisites mentioned [here](https://community.appdynamics.com/t5/Knowledge-Base/Extensions-Prerequisites-Guide/ta-p/35213) need to be met. Please do not proceed with the extension installation if the specified prerequisites are not met.
-3. The extension needs to be able to connect to AWS Cloudwatch in order to collect and send metrics. To do this, you will have to either establish a remote connection in between the extension and the product using access key and secret key, or have an agent running on EC2 instance, which you can use with instance profile.
-
-** Note : Running the extension with Machine Agent version 4.5.13 or later.
-
-* If you are seeing warning messages while starting the Machine Agent, update the http-client and http-core JARs in {MACHINE_AGENT_HOME}/monitorsLibs to httpclient-4.5.9 and httpcore-4.4.12 to make this warning go away.
-* To make AWS extensions work on Machine Agent < 4.5.13: The http-client and http-core JARs in {MACHINE_AGENT_HOME}/monitorsLibs has to be manually be updated to httpclient-4.5.9 and httpcore-4.4.12
+3. Download and install [Apache Maven](https://maven.apache.org/) which is configured with `Java 8` to build the extension artifact from source. You can check the java version used in maven using command `mvn -v` or `mvn --version`. If your maven is using some other java version then please download java 8 for your platform and set JAVA_HOME parameter before starting maven.
+4. The extension needs to be able to connect to AWS Cloudwatch in order to collect and send metrics. To do this, you will have to either establish a remote connection in between the extension and the product using access key and secret key, or have an agent running on EC2 instance, which you can use with instance profile.
 
 ## Installation
-1. Run 'mvn clean install' from `aws-s3-monitoring-extension`
-2. Copy and unzip `AWSS3Monitor-<version>.zip` from `target` directory into ` <machine_agent_dir>/monitors/`.
-3. Edit config.yml file in AWSS3Monitor and provide the required configuration (see Configuration section)
-4. Restart the Machine Agent.
+1. Clone the "aws-s3-monitoring-extension" repo using `git clone <repoUrl>` command.
+2. Run 'mvn clean install' from `aws-s3-monitoring-extension`
+3. Copy and unzip `AWSS3Monitor-<version>.zip` from `target` directory into ` <machine_agent_dir>/monitors/`.
+4. Edit config.yml file in AWSS3Monitor and provide the required configuration (see Configuration section)
+5. Restart the Machine Agent.
 
 Please place the extension in the <b>"monitors"</b> directory of your Machine Agent installation directory. Do not place the extension in the <b>"extensions"</b> directory of your Machine Agent installation directory.
 
